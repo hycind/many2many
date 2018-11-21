@@ -1,0 +1,78 @@
+<div class="ux-container">
+    <div class="ux-lpane">
+        <ng-container *ngTemplateOutlet="actionBar"></ng-container>
+        <ng-container *ngTemplateOutlet="leftPane"></ng-container>
+    </div>
+    <div style="width: 1rem"></div>
+    <div class="ux-rpane">
+        <ng-container *ngTemplateOutlet="actionBar"></ng-container>
+        <ng-container *ngTemplateOutlet="rightPane"></ng-container>
+    </div>
+</div>
+
+<ng-template #leftPane>
+    <div class="ux-pane-list">
+        <table mat-table [dataSource]="srcCust" class="ux-table">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-form-field>
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+                </th>
+                <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+            </ng-container>
+
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef> </th>
+                <td mat-cell *matCellDef="let row">
+                    <!-- <mat-checkbox (click)="$event.stopPropagation()" (change)="custChecked($event, row)" -->
+                    <!-- <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? cusSelection.toggle(row) : null" -->
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="custChecked($event, row)" [checked]="cusSelection.isSelected(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="custColumns"></tr>
+            <!-- <tr mat-row *matRowDef="let row; columns: custColumns;" (click)="cusSelection.toggle(row)"></tr> -->
+            <tr mat-row *matRowDef="let row; columns: custColumns;" (click)="custChecked($event, row)"></tr>
+            <!-- <tr mat-row *matRowDef="let row; columns: custColumns;" (click)="cusSelection.toggle(row)"></tr> -->
+        </table>
+        <mat-paginator #CustomersPaginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="pageChanged()"></mat-paginator>
+    </div>
+</ng-template>
+
+<ng-template #rightPane>
+    <div class="ux-pane-list">
+        <table mat-table [dataSource]="srcProd" class="ux-table">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Product Name </th>
+                <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+            </ng-container>
+
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="prdSelection.hasValue() && isAllSelected()"
+                        [indeterminate]="prdSelection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? prdSelection.toggle(row) : null"
+                        [checked]="prdSelection.isSelected(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="prodColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: prodColumns;" (click)="prdSelection.toggle(row)"></tr>
+        </table>
+        <mat-paginator #ProductsPaginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+</ng-template>
+
+<ng-template #actionBar>
+    <div class="ux-action-bar-wrapper">
+        I am the action bar
+    </div>
+</ng-template>
